@@ -1,6 +1,9 @@
 import streamlit as st
 from PIL import Image
-from transformers import pipeline
+from transformers import BlipProcessor, BlipForConditionalGeneration
+
+processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-large")
+model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-large")
 
 
 st.title('Image Captioning App')
@@ -10,8 +13,7 @@ uploaded_file = st.file_uploader("Upload Image")
 if uploaded_file is not None:
     image = Image.open(uploaded_file)
 
-    image_to_text = pipeline("image-to-text", model="nlpconnect/vit-gpt2-image-captioning")
+    inputs = processor(image, return_tensors="pt")
 
-    caption = image_to_text("https://ankur3107.github.io/assets/images/image-captioning-example.png")
-
-    st.write(caption)
+    out = model.generate(**inputs)
+    st.write(processor.decode(out[0], skip_special_tokens=True))
