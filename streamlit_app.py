@@ -1,3 +1,5 @@
 import streamlit as st
 
-st.write('Hello World!')
+st.title('Object Detection App')
+
+st.camera_input("Realtime Object Detection")
